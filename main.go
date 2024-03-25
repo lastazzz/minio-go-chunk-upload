@@ -8,12 +8,12 @@ import (
 )
 
 func main() {
-	oss, err := oss.NewOSS()
+	s, err := oss.NewOSS()
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	h := handler.NewHandler(oss)
+	h := handler.NewHandler(s)
 
 	svr := gin.Default()
 	svr.POST("prepare_multipart_upload", h.PrepareMultipartUpload)
@@ -21,5 +21,8 @@ func main() {
 	svr.POST("abort_multipart_upload", h.AbortMultipartUpload)
 	svr.POST("list_uploaded_parts_number", h.ListUploadedPartsNumber)
 
-	svr.Run(":8080")
+	if err := svr.Run(":8080"); err != nil {
+		log.Println(err)
+		return
+	}
 }
